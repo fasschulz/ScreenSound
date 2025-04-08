@@ -5,6 +5,7 @@ using ScreenSound.Modelos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,5 +42,16 @@ public class Musica_GET : IDisposable
         Assert.NotNull(response);
         Assert.Equal(musicaExistente.Id, response.Id);
         Assert.Equal(musicaExistente.Nome, response.Nome);
+    }
+
+    [Fact]
+    public async Task Retorna_Todas_As_Musicas()
+    {
+        using var client = _app.CreateClient();
+
+        var response = await client.GetFromJsonAsync<IEnumerable<Musica>>("/Musicas/");
+                
+        Assert.NotNull(response);
+        Assert.True(response.Count() > 0);
     }
 }
