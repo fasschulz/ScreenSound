@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using ScreenSound.Banco;
 
-namespace ScreenSound.Integration.Test
+namespace ScreenSound.Integration.Test.Fixture
 {
     public class ScreenSoundWebApplicationFactory: WebApplicationFactory<Program>
     {
@@ -12,7 +12,7 @@ namespace ScreenSound.Integration.Test
 
         public ScreenSoundWebApplicationFactory()
         {
-            this.scope = Services.CreateScope();
+            scope = Services.CreateScope();
             Context = scope.ServiceProvider.GetRequiredService<ScreenSoundContext>();
         }
     }

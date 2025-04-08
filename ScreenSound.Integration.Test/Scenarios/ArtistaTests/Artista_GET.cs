@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ScreenSound.Integration.Test.DataBuilders;
 using ScreenSound.Integration.Test.FakeData;
+using ScreenSound.Integration.Test.Fixture;
 using ScreenSound.Modelos;
 using System.Net;
 using System.Net.Http.Json;
 
-namespace ScreenSound.Integration.Test;
+namespace ScreenSound.Integration.Test.Scenarios.ArtistaTests;
 
 [Collection(nameof(ScreeSoundWebApplicationFactoryCollection))]
 public class Artista_GET : IDisposable

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ScreenSound.Integration.Test.DataBuilders;
+using ScreenSound.Integration.Test.Fixture;
 using ScreenSound.Modelos;
 
 namespace ScreenSound.Integration.Test.FakeData;

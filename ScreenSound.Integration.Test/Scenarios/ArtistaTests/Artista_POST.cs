@@ -1,9 +1,10 @@
 using ScreenSound.API.Requests;
 using ScreenSound.Integration.Test.FakeData;
+using ScreenSound.Integration.Test.Fixture;
 using System.Net;
 using System.Net.Http.Json;
 
-namespace ScreenSound.Integration.Test;
+namespace ScreenSound.Integration.Test.Scenarios.ArtistaTests;
 
 [Collection(nameof(ScreeSoundWebApplicationFactoryCollection))]
 public class Artista_POST : IDisposable

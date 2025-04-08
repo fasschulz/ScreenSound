@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ScreenSound.Integration.Test.FakeData;
+using ScreenSound.Integration.Test.Fixture;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ScreenSound.Integration.Test;
+namespace ScreenSound.Integration.Test.Scenarios.ArtistaTests;
 
 [Collection(nameof(ScreeSoundWebApplicationFactoryCollection))]
 public class Artista_DELETE : IDisposable

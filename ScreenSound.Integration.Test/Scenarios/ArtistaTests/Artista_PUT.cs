@@ -8,8 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ScreenSound.Integration.Test.FakeData;
+using ScreenSound.Integration.Test.Fixture;
 
-namespace ScreenSound.Integration.Test;
+namespace ScreenSound.Integration.Test.Scenarios.ArtistaTests;
 
 [Collection(nameof(ScreeSoundWebApplicationFactoryCollection))]
 public class Artista_PUT : IDisposable
