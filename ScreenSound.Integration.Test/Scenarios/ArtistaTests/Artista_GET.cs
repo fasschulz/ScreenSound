@@ -50,4 +50,26 @@ public class Artista_GET : IDisposable
         Assert.NotNull(response);
         Assert.True(response.Count() > 0);        
     }
+
+    [Fact]
+    public async Task Retorna_Not_Found_Quando_Nome_Artista_Inexistente()
+    {
+        using var client = app.CreateClient();
+
+        var response = await client.GetAsync("/Artistas/" + "NomeInexistente");
+                
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);        
+    }
+
+    [Fact]
+    public async Task Retorna_Not_Found_Quando_Nao_Acha_Artistas_Na_Base()
+    {
+        _artistaFakeData.LimparDadosDoBanco();
+        using var client = app.CreateClient();
+
+        var response = await client.GetAsync("/Artistas/");
+
+        _artistaFakeData.CriarDadosFake(20);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);        
+    }
 }

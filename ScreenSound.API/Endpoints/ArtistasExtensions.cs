@@ -15,7 +15,7 @@ public static class ArtistasExtensions
         app.MapGet("/Artistas", ([FromServices] DAL<Artista> dal) =>
         {
             var listaDeArtistas = dal.Listar();
-            if (listaDeArtistas is null)
+            if (listaDeArtistas is null || listaDeArtistas.Count() == 0)
             {
                 return Results.NotFound();
             }
