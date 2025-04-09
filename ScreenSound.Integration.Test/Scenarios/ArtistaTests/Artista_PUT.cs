@@ -44,5 +44,18 @@ public class Artista_PUT : IDisposable
 
         Assert.NotNull(response);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    }    
+    }
+
+    [Fact]
+    public async Task Retorna_Not_Found_Quando_Atualiza_Artista_Inexistente()
+    {
+        using var client = app.CreateClient();
+        
+        var artista = new ArtistaRequestEdit(
+            0, "Joao Ninguem", "Bio");
+
+        var response = await client.PutAsJsonAsync("/Artistas", artista);
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
 }
