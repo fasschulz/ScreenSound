@@ -38,4 +38,14 @@ public class Artista_DELETE : IDisposable
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
+
+    [Fact]
+    public async Task Retorna_Not_Found_Quando_Deleta_Artista_Inexistente()
+    {
+        using var client = _app.CreateClient();
+
+        var response = await client.DeleteAsync("/Artistas/" + 0);
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
 }
