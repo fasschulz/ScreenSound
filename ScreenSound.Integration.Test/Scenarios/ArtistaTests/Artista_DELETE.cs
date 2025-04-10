@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace ScreenSound.Integration.Test.Scenarios.ArtistaTests;
 
 [Collection(nameof(ScreeSoundWebApplicationFactoryCollection))]
-public class Artista_DELETE : IDisposable
+public class Artista_DELETE
 {
     private readonly ScreenSoundWebApplicationFactory _app;
     private readonly ArtistaFakeData _artistaFakeData;
@@ -20,22 +20,16 @@ public class Artista_DELETE : IDisposable
     {
         _app = app;
         _artistaFakeData = new ArtistaFakeData(app);
-        _artistaFakeData.CriarDadosFake(5);
-    }
-
-    public void Dispose()
-    {
-        _artistaFakeData.LimparDadosDoBanco();
     }
 
     [Fact]
     public async Task Deleta_Artista_Por_Id()
-    {        
-        var artistaExistente = await _app.Context.Artistas.FirstOrDefaultAsync();
+    {
+        var artistaExistente = _artistaFakeData.CriarDadosFake().FirstOrDefault();
         using var client = _app.CreateClient();
 
         var response = await client.DeleteAsync("/Artistas/" + artistaExistente.Id);
-
+                
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
 

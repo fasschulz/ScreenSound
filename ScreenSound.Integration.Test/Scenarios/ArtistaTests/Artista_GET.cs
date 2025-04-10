@@ -9,7 +9,7 @@ using System.Net.Http.Json;
 namespace ScreenSound.Integration.Test.Scenarios.ArtistaTests;
 
 [Collection(nameof(ScreeSoundWebApplicationFactoryCollection))]
-public class Artista_GET : IDisposable
+public class Artista_GET
 {
     private readonly ScreenSoundWebApplicationFactory app;
     private ArtistaFakeData _artistaFakeData;
@@ -18,23 +18,18 @@ public class Artista_GET : IDisposable
     {
         this.app = app;
         _artistaFakeData = new ArtistaFakeData(app);
-        _artistaFakeData.CriarDadosFake(20);
-    }
-
-    public void Dispose()
-    {
-        _artistaFakeData.LimparDadosDoBanco();
     }
 
     [Fact]
     public async Task Recupera_Artista_Por_Nome()
     {
-        var artistaExistente = await app.Context.Artistas.FirstOrDefaultAsync();
+        var artistaExistente = _artistaFakeData.CriarDadosFake().FirstOrDefault();
         
         using var client = app.CreateClient();
 
         var response = await client.GetFromJsonAsync<Artista>("/Artistas/" + artistaExistente.Nome);
 
+        _artistaFakeData.LimparDadosDoBanco(artistaExistente);
         Assert.NotNull(response);
         Assert.Equal(artistaExistente.Id, response.Id);
         Assert.Equal(artistaExistente.Nome, response.Nome);
@@ -42,11 +37,13 @@ public class Artista_GET : IDisposable
 
     [Fact]
     public async Task Recupera_Todos_Os_Artistas()
-    {       
+    {
+        var artistasExistentes = _artistaFakeData.CriarDadosFake(10);
         using var client = app.CreateClient();
 
         var response = await client.GetFromJsonAsync<IEnumerable<Artista>>("/Artistas/");
 
+        _artistaFakeData.LimparDadosDoBanco(artistasExistentes);
         Assert.NotNull(response);
         Assert.True(response.Count() > 0);        
     }
@@ -64,12 +61,10 @@ public class Artista_GET : IDisposable
     [Fact]
     public async Task Retorna_Not_Found_Quando_Nao_Acha_Artistas_Na_Base()
     {
-        _artistaFakeData.LimparDadosDoBanco();
         using var client = app.CreateClient();
 
         var response = await client.GetAsync("/Artistas/");
 
-        _artistaFakeData.CriarDadosFake(20);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);        
     }
 }

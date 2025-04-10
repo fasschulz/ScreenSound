@@ -13,7 +13,7 @@ using ScreenSound.Integration.Test.Fixture;
 namespace ScreenSound.Integration.Test.Scenarios.ArtistaTests;
 
 [Collection(nameof(ScreeSoundWebApplicationFactoryCollection))]
-public class Artista_PUT : IDisposable
+public class Artista_PUT
 {
     private readonly ScreenSoundWebApplicationFactory app;
     private readonly ArtistaFakeData _artistaFakeData;
@@ -22,26 +22,21 @@ public class Artista_PUT : IDisposable
     {
         this.app = app;
         _artistaFakeData = new ArtistaFakeData(app);
-        _artistaFakeData.CriarDadosFake(5);
-    }
-
-    public void Dispose()
-    {
-        _artistaFakeData.LimparDadosDoBanco();
     }
 
     [Fact]
     public async Task Atualiza_ArtistaAsync()
     {
-        using var client = app.CreateClient();
-
-        var artistaExistente = await app.Context.Artistas.FirstOrDefaultAsync();
+        var artistaExistente = _artistaFakeData.CriarDadosFake().FirstOrDefault();
+        
+        using var client = app.CreateClient();        
         
         var artista = new ArtistaRequestEdit(
             artistaExistente.Id, artistaExistente.Nome, artistaExistente.Bio);
 
         var response = await client.PutAsJsonAsync("/Artistas", artista);
 
+        _artistaFakeData.LimparDadosDoBanco(artistaExistente);
         Assert.NotNull(response);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }

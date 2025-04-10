@@ -36,4 +36,16 @@ public class ArtistaFakeData
     {
         app.Context.Database.ExecuteSqlRaw("DELETE FROM Artistas");
     }
+
+    public void LimparDadosDoBanco(IEnumerable<Artista> artistas)
+    {
+        app.Context.Artistas.RemoveRange(artistas);
+        app.Context.SaveChanges();
+    }
+
+    public void LimparDadosDoBanco(Artista artista)
+    {
+        app.Context.Artistas.Remove(artista);
+        app.Context.SaveChanges();
+    }
 }
