@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using ScreenSound.Integration.Test.FakeData;
 using ScreenSound.Integration.Test.Fixture;
+using ScreenSound.Modelos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,27 +14,25 @@ using System.Threading.Tasks;
 namespace ScreenSound.Integration.Test.Scenarios.MusicaTests;
 
 [Collection(nameof(ScreeSoundWebApplicationFactoryCollection))]
-public class Musica_PUT : IDisposable
+public class Musica_PUT
 {
     private readonly ScreenSoundWebApplicationFactory _app;
     private readonly MusicaFakeData _musicaFakeData;
+    private readonly GeneroFakeData _generoFakeData;
+    private readonly ArtistaFakeData _artistaFakeData;
 
     public Musica_PUT(ScreenSoundWebApplicationFactory app)
     {
         _app = app;
         _musicaFakeData = new MusicaFakeData(app);
-        _musicaFakeData.CriarDadosFake(5);
-    }
-
-    public void Dispose()
-    {
-        _musicaFakeData.LimparDadosDoBanco();
+        _generoFakeData = new GeneroFakeData(app);
+        _artistaFakeData = new ArtistaFakeData(app);
     }
 
     [Fact]
     public async Task Atualiza_Musica()
-    {        
-        var musica = await _app.Context.Musicas.FirstOrDefaultAsync();
+    {
+        var musica = _musicaFakeData.CriarDadosFake().FirstOrDefault();
         musica.Nome = "Faroeste Caboclo";
         musica.AnoLancamento = 1996;
         musica.Artista = null;
@@ -42,6 +41,11 @@ public class Musica_PUT : IDisposable
 
         var response = await client.PutAsJsonAsync("/Musicas/", musica);
 
+        //Tem que ser nessa ordem para conseguir pegar o generoId na tabela GeneroMusica
+        //E tambem por conta das FKs
+        _generoFakeData.LimparDadosDoBanco(musica.Id);
+        _musicaFakeData.LimparDadosDoBanco(musica.Id);
+        _artistaFakeData.LimparDadosDoBanco(musica.ArtistaId);
         Assert.NotNull(response);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }

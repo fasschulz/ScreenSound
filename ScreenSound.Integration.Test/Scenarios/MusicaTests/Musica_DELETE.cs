@@ -11,30 +11,30 @@ using System.Threading.Tasks;
 namespace ScreenSound.Integration.Test.Scenarios.MusicaTests;
 
 [Collection(nameof(ScreeSoundWebApplicationFactoryCollection))]
-public class Musica_DELETE : IDisposable
+public class Musica_DELETE
 {
     private readonly ScreenSoundWebApplicationFactory _app;
     private readonly MusicaFakeData _musicaFakeData;
+    private readonly GeneroFakeData _generoFakeData;
+    private readonly ArtistaFakeData _artistaFakeData;
 
     public Musica_DELETE(ScreenSoundWebApplicationFactory app)
     {
         _app = app;
         _musicaFakeData = new MusicaFakeData(app);
-        _musicaFakeData.CriarDadosFake(5);
-    }
-
-    public void Dispose()
-    {
-        _musicaFakeData.LimparDadosDoBanco();
+        _generoFakeData = new GeneroFakeData(app);
+        _artistaFakeData = new ArtistaFakeData(app);
     }
 
     [Fact]
     public async Task Deleta_Musica_Por_Id()
     {
-        var musica = await _app.Context.Musicas.FirstOrDefaultAsync();
+        var musica = _musicaFakeData.CriarDadosFake().FirstOrDefault();
         using var client = _app.CreateClient();
 
+        _generoFakeData.LimparDadosDoBanco(musica.Id);        
         var response = await client.DeleteAsync("/Musicas/" + musica.Id);
+        _artistaFakeData.LimparDadosDoBanco(musica.ArtistaId);
 
         Assert.NotNull(response);
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);

@@ -13,32 +13,33 @@ using System.Threading.Tasks;
 namespace ScreenSound.Integration.Test.Scenarios.MusicaTests;
 
 [Collection(nameof(ScreeSoundWebApplicationFactoryCollection))]
-public class Musica_GET : IDisposable
+public class Musica_GET
 {
     private readonly ScreenSoundWebApplicationFactory _app;
     private readonly MusicaFakeData _musicaFakeData;
+    private readonly GeneroFakeData _generoFakeData;
+    private readonly ArtistaFakeData _artistaFakeData;
 
     public Musica_GET(ScreenSoundWebApplicationFactory app)
     {
         _app = app;
         _musicaFakeData = new MusicaFakeData(app);
-        _musicaFakeData.CriarDadosFake(20);
-    }
-
-    public void Dispose()
-    {
-        _musicaFakeData.LimparDadosDoBanco();
+        _generoFakeData = new GeneroFakeData(app);
+        _artistaFakeData = new ArtistaFakeData(app);
     }
 
     [Fact]
     public async Task Retorna_Musica_Por_Nome()
     {
-        var musicaExistente = await _app.Context.Musicas.FirstOrDefaultAsync();
+        var musicaExistente = _musicaFakeData.CriarDadosFake().FirstOrDefault();
 
         using var client = _app.CreateClient();
 
         var response = await client.GetFromJsonAsync<Musica>("/Musicas/" + musicaExistente.Nome);
 
+        _generoFakeData.LimparDadosDoBanco(musicaExistente.Id);
+        _musicaFakeData.LimparDadosDoBanco(musicaExistente.Id);
+        _artistaFakeData.LimparDadosDoBanco(musicaExistente.ArtistaId);
         Assert.NotNull(response);
         Assert.Equal(musicaExistente.Id, response.Id);
         Assert.Equal(musicaExistente.Nome, response.Nome);
@@ -47,10 +48,14 @@ public class Musica_GET : IDisposable
     [Fact]
     public async Task Retorna_Todas_As_Musicas()
     {
+        var musicasExistentes = _musicaFakeData.CriarDadosFake(5);
         using var client = _app.CreateClient();
 
         var response = await client.GetFromJsonAsync<IEnumerable<Musica>>("/Musicas/");
-                
+
+        _generoFakeData.LimparDadosDoBanco(musicasExistentes);        
+        _musicaFakeData.LimparDadosDoBanco(musicasExistentes);
+        _artistaFakeData.LimparDadosDoBanco(musicasExistentes);
         Assert.NotNull(response);
         Assert.True(response.Count() > 0);
     }

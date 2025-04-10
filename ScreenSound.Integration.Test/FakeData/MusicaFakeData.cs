@@ -37,4 +37,27 @@ public class MusicaFakeData
         _app.Context.Database.ExecuteSqlRaw("DELETE FROM Generos");
         _app.Context.Database.ExecuteSqlRaw("DELETE FROM Artistas");
     }
+
+    public void LimparDadosDoBanco(IEnumerable<Musica> musicas)
+    {
+        foreach(var musica in musicas)
+        {
+            _app.Context.Musicas
+                .Where(m => m.Id == musica.Id)
+                .ExecuteDelete();
+        }
+    }
+
+    public void LimparDadosDoBanco(Musica musica)
+    {
+        _app.Context.Remove(musica);
+        _app.Context.SaveChanges();
+    }
+
+    public void LimparDadosDoBanco(int musicaId)
+    {
+        _app.Context.Musicas
+            .Where(m => m.Id == musicaId)
+            .ExecuteDelete();
+    }
 }

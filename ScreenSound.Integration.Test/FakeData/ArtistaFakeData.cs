@@ -48,4 +48,21 @@ public class ArtistaFakeData
         app.Context.Artistas.Remove(artista);
         app.Context.SaveChanges();
     }
+
+    public void LimparDadosDoBanco(int? artistaId)
+    {
+        app.Context.Artistas
+            .Where(a => a.Id == artistaId)
+            .ExecuteDelete();
+    }
+
+    public void LimparDadosDoBanco(IEnumerable<Musica> musicas)
+    {
+        foreach(var musica in musicas)
+        {
+            app.Context.Artistas
+                .Where(a => a.Id == musica.ArtistaId)
+                .ExecuteDelete();
+        }
+    }
 }
