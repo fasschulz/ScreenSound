@@ -45,7 +45,7 @@ public static class MusicasExtensions
                 
             };
             dal.Adicionar(musica);
-            return Results.Ok();
+            return Results.Ok(EntityToResponse(musica));
         });
 
         app.MapDelete("/Musicas/{id}", ([FromServices] DAL<Musica> dal, int id) => {
@@ -92,6 +92,6 @@ public static class MusicasExtensions
 
     private static MusicaResponse EntityToResponse(Musica musica)
     {
-        return new MusicaResponse(musica.Id, musica.Nome!, musica.Artista!.Id, musica.Artista.Nome);
+        return new MusicaResponse(musica.Id, musica.Nome!, musica.ArtistaId);
     }
 }
